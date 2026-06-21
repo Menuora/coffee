@@ -1,0 +1,185 @@
+body.admin-page {
+  background: linear-gradient(135deg, #f7f3ec 0%, #fff 55%, #efe0c8 100%);
+  color: #333;
+  min-height: 100vh;
+}
+
+.admin-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.admin-login,
+.admin-panel {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(182, 136, 52, 0.16);
+  padding: 28px;
+}
+
+.admin-login {
+  max-width: 420px;
+  margin: 70px auto;
+  padding: 36px;
+  text-align: center;
+}
+
+.admin-login .form-control,
+.admin-panel .form-control {
+  margin-bottom: 14px;
+}
+
+.admin-login .form-control {
+  border: 1px solid #eee;
+  height: 48px;
+  text-align: center;
+}
+
+.login-badge {
+  align-items: center;
+  background: #b68834;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  font-size: 24px;
+  height: 64px;
+  justify-content: center;
+  margin-bottom: 16px;
+  width: 64px;
+}
+
+.login-kicker {
+  color: #b68834;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.admin-topbar {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.admin-topbar p {
+  color: #b68834;
+  font-weight: 600;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.admin-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-panel h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.admin-form-grid {
+  display: grid;
+  gap: 0 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-span {
+  grid-column: 1 / -1;
+}
+
+.admin-action-btn {
+  background: #b68834;
+  border: 0;
+  border-radius: 4px;
+  box-shadow: 0 8px 20px rgba(182, 136, 52, 0.22);
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 44px;
+  min-width: 150px;
+  padding: 0 22px;
+}
+
+.admin-action-btn:hover {
+  background: #222;
+  color: #fff;
+}
+
+.admin-action-btn.danger {
+  background: #cf2e2e;
+  box-shadow: 0 8px 20px rgba(207, 46, 46, 0.2);
+}
+
+.admin-action-btn.danger:hover {
+  background: #a71919;
+}
+
+.delete-booking {
+  background: #cf2e2e;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 7px 12px;
+}
+
+.drop-zone {
+  align-items: center;
+  background: #fffaf2;
+  border: 2px dashed #d8b678;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  padding: 30px 18px;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.drop-zone:hover,
+.drop-zone.dragover {
+  background: #f7efdF;
+  border-color: #b68834;
+}
+
+.drop-zone i {
+  color: #b68834;
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.drop-zone strong {
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.drop-zone span {
+  color: #777;
+  font-size: 13px;
+}
+
+.drop-zone input {
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+@media (max-width: 767px) {
+  .admin-topbar,
+  .admin-form-grid {
+    display: block;
+  }
+}
