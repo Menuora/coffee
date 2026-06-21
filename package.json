@@ -1,0 +1,17 @@
+{
+  "name": "sellable-hotel-restaurant-template",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "check": "node --check server.js && node --check api/index.js && node --check js/admin.js && node --check js/bookings.js && node --check js/settings.js && node --check js/gallery.js",
+    "smoke": "node -e \"const app=require('./api/index'); const server=app.listen(0, async()=>{const port=server.address().port; const base='http://127.0.0.1:'+port; const admin=await fetch(base+'/admin'); const settings=await fetch(base+'/api/settings'); const me=await fetch(base+'/api/admin/me'); const gallery=await fetch(base+'/gallery.html'); console.log(admin.status, settings.status, me.status, gallery.status); server.close();});\""
+  },
+  "dependencies": {
+    "cloudinary": "^2.8.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "multer": "^2.0.2"
+  }
+}

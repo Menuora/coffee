@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,400,300,500,600,700" rel="stylesheet">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-page">
+  <main class="admin-shell">
+    <section class="admin-login" data-login-view>
+      <div class="login-badge"><i class="fa fa-lock"></i></div>
+      <p class="login-kicker">Private Dashboard</p>
+      <h1>Admin Login</h1>
+      <form data-login-form>
+        <input class="form-control" name="username" placeholder="Username" required>
+        <input class="form-control" name="password" type="password" placeholder="Password" required>
+        <button class="admin-action-btn text-uppercase" type="submit">Login</button>
+        <p data-status></p>
+      </form>
+    </section>
+
+    <section data-dashboard hidden>
+      <div class="admin-topbar">
+        <div>
+          <p>Website Admin</p>
+          <h1>Dashboard</h1>
+        </div>
+        <button class="admin-action-btn danger text-uppercase" type="button" data-logout>Logout</button>
+      </div>
+
+      <div class="admin-grid">
+        <section class="admin-panel">
+          <h2>Bookings</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr><th>Name</th><th>Phone</th><th>Email</th><th>Date</th><th>Guests</th><th>Message</th><th>Action</th></tr>
+              </thead>
+              <tbody data-bookings-list></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-panel">
+          <h2>Menu/Image Upload</h2>
+          <form data-upload-form>
+            <select class="form-control" name="type">
+              <option value="menu">Full menu image</option>
+              <option value="item">Individual item image</option>
+            </select>
+            <label class="drop-zone">
+              <i class="fa fa-cloud-upload"></i>
+              <strong>Drag image here or choose file</strong>
+              <span data-file-name>PNG, JPG, or WebP up to 12MB</span>
+              <input name="image" type="file" accept="image/*" required>
+            </label>
+            <button class="admin-action-btn text-uppercase" type="submit">Upload Image</button>
+            <p data-upload-message></p>
+          </form>
+        </section>
+
+        <section class="admin-panel">
+          <h2>Website Settings</h2>
+          <form class="admin-form-grid" data-settings-form>
+            <input class="form-control" name="restaurantName" placeholder="Hotel/restaurant name">
+            <input class="form-control" name="facebookLink" placeholder="Facebook link">
+            <input class="form-control" name="instagramLink" placeholder="Instagram link">
+            <input class="form-control" name="twitterLink" placeholder="Twitter/X link">
+            <input class="form-control" name="openingTime" placeholder="Opening time">
+            <input class="form-control" name="closingTime" placeholder="Closing time">
+            <textarea class="form-control admin-span" name="googleMapsEmbed" rows="3" placeholder="Google Maps iframe code or src link"></textarea>
+            <button class="admin-action-btn text-uppercase" type="submit">Save Settings</button>
+            <p data-status></p>
+          </form>
+        </section>
+
+        <section class="admin-panel">
+          <h2>Homepage Image Settings</h2>
+          <form class="admin-form-grid" data-images-form>
+            <input class="form-control" name="heroImage1" placeholder="Hero image 1">
+            <input class="form-control" name="heroImage1Secondary" placeholder="Hero image 1 corner/secondary image">
+            <input class="form-control" name="heroImage2" placeholder="Hero image 2">
+            <input class="form-control" name="heroImage2Secondary" placeholder="Hero image 2 corner/secondary image">
+            <input class="form-control" name="aboutImage1" placeholder="About image 1">
+            <input class="form-control" name="aboutImage2" placeholder="About image 2">
+            <input class="form-control" name="bookingImage" placeholder="Booking/reservation side image">
+            <input class="form-control" name="menuHeaderImage" placeholder="Menu page header image">
+            <input class="form-control" name="galleryHeaderImage" placeholder="Gallery/images page header image">
+            <input class="form-control" name="contactHeaderImage" placeholder="Contact page header image">
+            <button class="admin-action-btn text-uppercase" type="submit">Save Images</button>
+            <p data-status></p>
+          </form>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="js/admin.js"></script>
+</body>
+</html>
