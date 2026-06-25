@@ -1,3 +1,5 @@
 node_modules/
 .env
 .local-data/
+js/env.js
+bookings.json

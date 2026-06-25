@@ -8,13 +8,7 @@
     if (message) message.textContent = 'Sending your booking...';
     const payload = Object.fromEntries(new FormData(form).entries());
     try {
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Booking failed');
+      await dbApi.addBooking(payload);
       form.reset();
       if (message) message.textContent = 'Thank you. Your table request has been sent.';
     } catch (error) {

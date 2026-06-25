@@ -1,80 +1,82 @@
-# Hotel/Restaurant Website Template
+# Serverless Hotel/Restaurant Website Template
 
-This template is ready for Vercel deployment with a private `/admin` dashboard, table bookings, Cloudinary image uploads, editable website settings, and a public menu/image gallery.
+This restaurant template is fully portable, serverless, and ready for deployment on any static hosting provider (Vercel, Netlify, GitHub Pages, etc.). It features client-side **Firebase (Firestore & Auth)** integration and secure client-side **Cloudinary** uploads.
 
-## Features
+No Node.js backend or Vercel serverless functions are required for live data storage, allowing easy white-labeling and credential swapping.
 
-- Public coffee/restaurant landing page with the original template style
-- Public `gallery.html` page for full menu and item images
-- Private `/admin` dashboard with environment-based login
-- Book Table form saved to the admin dashboard
-- Cloudinary image uploads for full menu images and individual item photos
-- Editable restaurant name, social links, map embed, opening hours, and homepage image URLs
-- Vercel-friendly API routes in `api/index.js`
+---
 
-## Setup
+## 🌟 Architecture & White-Labeling Plan
 
-1. Install dependencies:
+1. **Static Deployment**: Because the template is 100% client-side, you can host it for free on any static host.
+2. **Easy Portability / White-Labeling**: All external credentials (Gmail IDs, Firebase configs, Cloudinary cloud names) are stored in a single config file: `js/env.js`. 
+3. **Local Fallback Mode**: If `js/env.js` is left unconfigured, the website automatically falls back to browser `localStorage` for bookings, images, and settings. This allows local development and instant previews without any setup.
+4. **Secure Uploads**: Client-side Cloudinary upload uses **Unsigned Upload Presets** so that your private Cloudinary API Secret is never exposed in the browser.
 
+---
+
+## 🚀 Features
+
+- **Home Page**: Modern restaurant landing page with contact info, opening hours, and dynamic map iframe.
+- **Book Table**: Real-time table booking form that saves directly to Firestore (or LocalStorage).
+- **Gallery Page (`gallery.html`)**: Dynamically lists full menu and individual item uploads from the database.
+- **Admin Dashboard (`/admin`)**:
+  - **Login / Logout**: Private credentials login using Firebase Auth (or fallback local credentials).
+  - **Bookings Management**: View submitted bookings list in real-time, complete with a delete action.
+  - **Menu/Image Upload**: Direct client-side upload of full menus or item images.
+  - **Website Settings**: Instantly update the restaurant name, social links, opening times, and Google Maps iframe embed.
+  - **Homepage Image Settings**: Change hero banners, corner photos, and header images on the fly.
+  - **Change Password**: Change the admin login password securely.
+
+---
+
+## ⚙️ Configuration Setup
+
+### 1. Copy the configuration file:
+Copy the example config to a real `js/env.js` file:
 ```bash
-npm install
+cp js/env.example.js js/env.js
 ```
-
-2. Run locally:
-
-```bash
-npm run dev
-```
-
-The template runs without asking for Vercel credentials. For local testing, the default admin login is:
-
-```text
-Username: admin
-Password: pass
-```
-
-Local bookings and settings are saved in `.local-data/` when Cloudinary is not configured.
-
-3. For real deployment, copy the example environment file:
-
-```bash
-cp .env.example .env
-```
-
 On Windows PowerShell:
-
 ```powershell
-Copy-Item .env.example .env
+Copy-Item js/env.example.js js/env.js
 ```
 
-4. Fill these values in `.env`:
+### 2. Enter Credentials in `js/env.js`:
+Open `js/env.js` and enter the specific credentials for the restaurant/hotel owner:
+- **Firebase Configuration**: Set up a Firebase project, enable **Firebase Authentication** (Email/Password provider) and **Cloud Firestore Database**, and copy the config block.
+- **Cloudinary Configuration**: Enable client-side uploads by creating an **Unsigned Upload Preset** in your Cloudinary Dashboard under *Settings > Upload > Upload Presets*. Enter your Cloud Name and the Preset Name.
+- **Fallback Credentials**: Specify the initial login credentials when running in Local Mode.
 
-```env
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=change-this-password
-SESSION_SECRET=replace-with-a-long-random-secret
-CLOUDINARY_CLOUD_NAME=your-cloud-name
-CLOUDINARY_API_KEY=your-api-key
-CLOUDINARY_API_SECRET=your-api-secret
-```
+---
 
-5. Open:
+## 💻 Local Development
 
-- Public site: `http://localhost:3000`
-- Admin: `http://localhost:3000/admin`
-- Gallery: `http://localhost:3000/gallery.html`
+1. **Install Dependencies** (only needed for a simple local development server):
+   ```bash
+   npm install
+   ```
 
-## Deploy To Vercel
+2. **Run the local preview server**:
+   ```bash
+   npm run dev
+   ```
 
-1. Push this folder to a GitHub repository.
-2. Import the repository in Vercel.
-3. Add the same environment variables from `.env.example` in the Vercel project settings.
-4. Deploy.
-5. Give the hotel/restaurant owner the `/admin` URL and the admin credentials.
+3. **Default Local Login** (if `js/env.js` is empty):
+   - **Username**: `admin`
+   - **Password**: `change-this-password`
 
-## Notes
+4. **Access Links**:
+   - Public landing page: `http://localhost:3000`
+   - Admin panel: `http://localhost:3000/admin`
+   - Gallery page: `http://localhost:3000/gallery.html`
 
-- GitHub Pages can host the static public files only. Bookings, admin login, uploads, and settings require the Vercel API.
-- Cloudinary stores uploaded images and the small JSON data files used for bookings/settings, so no extra database credentials are required.
-- Cloudinary is required for deployed persistence and image uploads. Local testing works without Cloudinary credentials.
-- The admin link is intentionally not shown in the public navigation. Access it manually at `/admin`.
+---
+
+## ☁️ Deploying Live
+
+To set up a live site for a new hotel owner:
+1. Create a Firebase project and Cloudinary account for the owner.
+2. Replace the values in `js/env.js` with their credentials.
+3. Deploy the folder statically to **Vercel**, **Netlify**, or **GitHub Pages**.
+4. The template is now fully white-labeled and owned by the hotel client!

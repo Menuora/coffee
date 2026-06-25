@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if the user is authenticated (Admin)
+    function isAdmin() {
+      return request.auth != null;
+    }
+
+    // Settings config (restaurantName, maps, openingHours, banner images, etc.)
+    match /settings/{document} {
+      // Anyone can read restaurant configurations to view the website correctly
+      allow read: if true;
+      // Only the authenticated admin can modify configurations
+      allow write: if isAdmin();
+    }
+
+    // Customer Table Bookings
+    match /bookings/{bookingId} {
+      // Anyone can submit/create a new table booking request
+      allow create: if true;
+      // Only the authenticated admin can read, update, or delete customer bookings
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Gallery / Menu Images
+    match /images/{imageId} {
+      // Anyone can read/view uploaded gallery and menu photos
+      allow read: if true;
+      // Only the authenticated admin can upload (create) or delete images
+      allow write: if isAdmin();
+    }
+  }
+}

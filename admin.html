@@ -96,9 +96,28 @@
             <p data-status></p>
           </form>
         </section>
+
+        <section class="admin-panel">
+          <h2>Change Password</h2>
+          <form class="admin-form-grid" data-password-form>
+            <input class="form-control" name="currentPassword" type="password" placeholder="Current Password" required>
+            <input class="form-control" name="newPassword" type="password" placeholder="New Password" required>
+            <input class="form-control admin-span" name="confirmPassword" type="password" placeholder="Confirm New Password" required>
+            <button class="admin-action-btn text-uppercase" type="submit">Update Password</button>
+            <p data-status class="admin-span"></p>
+          </form>
+        </section>
       </div>
     </section>
   </main>
+
+  <!-- Firebase & Env config -->
+  <script src="js/env.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/db.js"></script>
+
   <script src="js/admin.js"></script>
 </body>
 </html>

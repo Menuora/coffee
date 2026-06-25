@@ -17,13 +17,6 @@
     dashboard.hidden = !show;
   }
 
-  async function request(url, options) {
-    const response = await fetch(url, options);
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.error || 'Request failed');
-    return data;
-  }
-
   function fillForm(form, values) {
     Object.entries(values || {}).forEach(([key, value]) => {
       const field = form.querySelector(`[name="${key}"]`);
@@ -32,28 +25,50 @@
   }
 
   async function loadBookings() {
-    const data = await request('/api/admin/bookings');
-    bookingsList.innerHTML = (data.bookings || []).map((booking) => `
-      <tr>
-        <td>${booking.name}</td>
-        <td>${booking.phone}</td>
-        <td>${booking.email || '-'}</td>
-        <td>${booking.date} ${booking.time}</td>
-        <td>${booking.guests}</td>
-        <td>${booking.message || '-'}</td>
-        <td><button class="delete-booking" type="button" data-delete-booking="${booking.id}">Delete</button></td>
-      </tr>`).join('') || '<tr><td colspan="7">No bookings yet.</td></tr>';
+    try {
+      const bookings = await dbApi.getBookings();
+      bookingsList.innerHTML = bookings.map((booking) => `
+        <tr>
+          <td>${booking.name}</td>
+          <td>${booking.phone}</td>
+          <td>${booking.email || '-'}</td>
+          <td>${booking.date} ${booking.time}</td>
+          <td>${booking.guests}</td>
+          <td>${booking.message || '-'}</td>
+          <td><button class="delete-booking" type="button" data-delete-booking="${booking.id}">Delete</button></td>
+        </tr>`).join('') || '<tr><td colspan="7">No bookings yet.</td></tr>';
+    } catch (error) {
+      console.error("Failed to load bookings:", error);
+    }
   }
 
   async function loadSettings() {
-    const data = await request('/api/settings');
-    fillForm(settingsForm, data.settings);
-    fillForm(imagesForm, data.homepageImages);
+    try {
+      const [settings, homepageImages] = await Promise.all([
+        dbApi.getSettings(),
+        dbApi.getHomepageImages()
+      ]);
+      fillForm(settingsForm, settings);
+      fillForm(imagesForm, homepageImages);
+    } catch (error) {
+      console.error("Failed to load settings:", error);
+    }
   }
 
   async function boot() {
     try {
-      await request('/api/admin/me');
+      const user = await dbApi.getCurrentUser();
+      
+      // Update UI placeholders depending on if Firebase is used
+      const usernameInput = loginForm.querySelector('[name="username"]');
+      if (usernameInput) {
+        usernameInput.placeholder = dbApi.isFirebaseUsed() ? "Email / Username" : "Username";
+      }
+
+      if (!user) {
+        showDashboard(false);
+        return;
+      }
       showDashboard(true);
       await Promise.all([loadBookings(), loadSettings()]);
     } catch (error) {
@@ -66,11 +81,8 @@
     const status = loginForm.querySelector('[data-status]');
     status.textContent = 'Checking login...';
     try {
-      await request('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(loginForm).entries()))
-      });
+      const data = Object.fromEntries(new FormData(loginForm).entries());
+      await dbApi.login(data.username, data.password);
       status.textContent = '';
       await boot();
     } catch (error) {
@@ -79,7 +91,7 @@
   });
 
   logoutButton.addEventListener('click', async () => {
-    await request('/api/admin/logout', { method: 'POST' });
+    await dbApi.logout();
     showDashboard(false);
   });
 
@@ -87,9 +99,13 @@
     event.preventDefault();
     uploadMessage.textContent = 'Uploading...';
     try {
-      await request('/api/admin/uploads', { method: 'POST', body: new FormData(uploadForm) });
+      const type = uploadForm.querySelector('[name="type"]').value;
+      const file = fileInput.files[0];
+      if (!file) throw new Error('Please select an image file first.');
+      await dbApi.uploadImage(file, type);
       uploadForm.reset();
-      uploadMessage.textContent = 'Image uploaded.';
+      fileName.textContent = 'PNG, JPG, or WebP up to 12MB';
+      uploadMessage.textContent = 'Image uploaded successfully.';
     } catch (error) {
       uploadMessage.textContent = error.message;
     }
@@ -99,8 +115,13 @@
     const button = event.target.closest('[data-delete-booking]');
     if (!button) return;
     button.textContent = 'Deleting...';
-    await request(`/api/admin/bookings/${button.dataset.deleteBooking}`, { method: 'DELETE' });
-    await loadBookings();
+    try {
+      await dbApi.deleteBooking(button.dataset.deleteBooking);
+      await loadBookings();
+    } catch (error) {
+      alert("Failed to delete booking: " + error.message);
+      button.textContent = 'Delete';
+    }
   });
 
   fileInput.addEventListener('change', () => {
@@ -126,23 +147,53 @@
 
   settingsForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    await request('/api/admin/settings', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.fromEntries(new FormData(settingsForm).entries()))
-    });
-    settingsForm.querySelector('[data-status]').textContent = 'Settings saved.';
+    const status = settingsForm.querySelector('[data-status]');
+    status.textContent = 'Saving...';
+    try {
+      const data = Object.fromEntries(new FormData(settingsForm).entries());
+      await dbApi.saveSettings(data);
+      status.textContent = 'Settings saved.';
+    } catch (error) {
+      status.textContent = 'Error: ' + error.message;
+    }
   });
 
   imagesForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-    await request('/api/admin/homepage-images', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(Object.fromEntries(new FormData(imagesForm).entries()))
-    });
-    imagesForm.querySelector('[data-status]').textContent = 'Image settings saved.';
+    const status = imagesForm.querySelector('[data-status]');
+    status.textContent = 'Saving...';
+    try {
+      const data = Object.fromEntries(new FormData(imagesForm).entries());
+      await dbApi.saveHomepageImages(data);
+      status.textContent = 'Image settings saved.';
+    } catch (error) {
+      status.textContent = 'Error: ' + error.message;
+    }
   });
+
+  // Change Password Form
+  const passwordForm = document.querySelector('[data-password-form]');
+  if (passwordForm) {
+    passwordForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const status = passwordForm.querySelector('[data-status]');
+      status.textContent = 'Updating...';
+      const data = Object.fromEntries(new FormData(passwordForm).entries());
+      
+      if (data.newPassword !== data.confirmPassword) {
+        status.textContent = 'New passwords do not match.';
+        return;
+      }
+
+      try {
+        await dbApi.changePassword(data.currentPassword, data.newPassword);
+        passwordForm.reset();
+        status.textContent = 'Password updated successfully.';
+      } catch (error) {
+        status.textContent = error.message;
+      }
+    });
+  }
 
   boot();
 })();

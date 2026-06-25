@@ -46,11 +46,12 @@
     });
   }
 
-  window.siteSettingsReady = fetch('/api/settings')
-    .then((response) => response.json())
-    .then((data) => {
-      const settings = data.settings || {};
-      const images = Object.assign({}, fallbackImages, data.homepageImages || {});
+  window.siteSettingsReady = Promise.all([
+    dbApi.getSettings(),
+    dbApi.getHomepageImages()
+  ])
+    .then(([settings, homepageImages]) => {
+      const images = Object.assign({}, fallbackImages, homepageImages || {});
       document.title = settings.restaurantName || document.title;
       setText('[data-setting="restaurantName"]', settings.restaurantName);
       setText('[data-setting="openingTime"]', settings.openingTime);
@@ -69,7 +70,10 @@
       setImage('[data-image="aboutImage2"]', images.aboutImage2);
       setImage('[data-image="bookingImage"]', images.bookingImage);
       renderMap(settings.googleMapsEmbed);
-      return data;
+      return { settings, homepageImages };
     })
-    .catch(() => null);
+    .catch((err) => {
+      console.error(err);
+      return null;
+    });
 })();

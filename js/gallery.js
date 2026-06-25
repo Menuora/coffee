@@ -13,10 +13,8 @@
       </div>`;
   }
 
-  fetch('/api/images')
-    .then((response) => response.json())
-    .then((data) => {
-      const images = data.images || [];
+  dbApi.getImages()
+    .then((images) => {
       target.innerHTML = images.length
         ? images.map(card).join('')
         : '<div class="col-12 text-center"><p>No menu images have been uploaded yet.</p></div>';
